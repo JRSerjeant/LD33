@@ -8,8 +8,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new LD33(), config);
-		config.title = "Super Running Raptor";
-		config.width = 720;
-		config.height = 720;
+		config.title = "Super Running Nessie";
+		config.width = 900;
+		config.height = 900;
 	}
 }
