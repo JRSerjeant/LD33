@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new LD33(), config);
 		config.title = "Super Running Nessie";
-		config.width = 900;
-		config.height = 900;
+		config.width = 1000;
+		config.height = 760;
 	}
 }
