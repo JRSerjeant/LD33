@@ -40,7 +40,7 @@ public class Boat {
     Vector2 boatPosition;
     public Vector2 nessiePosition;
     private  boolean boolIsDestroyed = false;
-    List<Boat> listBoat = new ArrayList<>();
+    List<Boat> listBoat = new ArrayList();
     public static int intMasterStartSide = 0;
     int intStartSide;
     int intHealth;
@@ -122,10 +122,8 @@ public class Boat {
                 floatHitboxSizeOffsetY = 0f;
                 floatRotation = 270f;
                 spriteLady.setRotation(270f);
-
                 break;
         }
-
         this.listBoat = listBoat;
         floatPositionY = floatStartPositionY;
         floatPositionX = floatStartPositionX;
@@ -187,7 +185,6 @@ public class Boat {
         floatHitboxWidth = spriteBoat.getWidth() - floatHitboxSizeOffsetY;
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(floatHitboxPositionX, floatHitboxPositionY, boatBoundingRectangle.x, boatBoundingRectangle.y, floatHitboxHeight, floatHitboxWidth, 1f, 1f, 0f);
-
     }
 
     public boolean checkBounds()

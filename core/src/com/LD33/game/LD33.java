@@ -22,7 +22,7 @@ public class LD33 extends ApplicationAdapter {
     Texture loch;
 
 	int numberBoats = 6;
-    public List<Boat> listBoat = new ArrayList<>();
+    public List<Boat> listBoat = new ArrayList();
 	
 	@Override
 	public void create () {
