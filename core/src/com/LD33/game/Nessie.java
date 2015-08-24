@@ -2,12 +2,16 @@ package com.LD33.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.List;
 
 /**
  * Created by Jack on 22/08/2015.
@@ -29,25 +33,39 @@ public class Nessie
     private static boolean boolIsInboundsY_Up = true;
     private static boolean boolIsInboundsY_Down = true;
 
+    private static float floatHitboxX;
+    private static float floatHitboxY;
+    private static float floatsHitboxSize;
+    private static Rectangle nessieBoundingRectangle;
+    private static Rectangle nessieHitBox;
+
     public static Vector2 position;
 
     public Nessie()
     {
         textureNessie = new Texture("nessie.png");
         textureNessieUnder = new Texture("nessie_under.png");
-        textureSplash = new Texture("splash.png");
+        textureSplash = new Texture("headBut.png");
 
 
         spriteNessie = new Sprite(textureNessie);
         spriteSplash = new Sprite(textureSplash);
         spriteNessie.setSize(spriteNessie.getWidth()/2.5f,spriteNessie.getHeight()/2.5f);
+        spriteNessie.setPosition(Gdx.graphics.getWidth()/2-spriteNessie.getWidth()/2,Gdx.graphics.getHeight()/2-spriteNessie.getHeight()/2);
+        floatsHitboxSize = 25f;
+
+        nessieHitBox = new Rectangle(-100f,-100f,0f,0f);
 
     }
-    public static void update()
+    public static void update(List<Boat> boats)
     {
+        nessieBoundingRectangle = spriteNessie.getBoundingRectangle();
+        nessieHitBox.set(floatHitboxX,floatHitboxY,floatsHitboxSize,floatsHitboxSize);
+        headBut(boats);
         moveNessie();
         keepInBounds();
         position = new Vector2(spriteNessie.getX(),spriteNessie.getY());
+
     }
     public static void draw(Batch batch)
     {
@@ -56,9 +74,6 @@ public class Nessie
         else spriteNessie.setTexture(textureNessie);
         spriteNessie.setOriginCenter();
         spriteNessie.draw(batch);
-
-        if(splash())
-            spriteSplash.draw(batch);
 
     }
 
@@ -70,6 +85,8 @@ public class Nessie
             {
                 spriteNessie.translateY(floatSpeed * Gdx.graphics.getDeltaTime());
                 spriteNessie.setRotation(0f);
+                floatHitboxX = nessieBoundingRectangle.x + (spriteNessie.getWidth()/2 - floatsHitboxSize/2);
+                floatHitboxY = nessieBoundingRectangle.y + (spriteNessie.getHeight()-floatsHitboxSize);
             }
 
         }
@@ -79,6 +96,8 @@ public class Nessie
             {
                 spriteNessie.translateY(-floatSpeed * Gdx.graphics.getDeltaTime());
                 spriteNessie.setRotation(180f);
+                floatHitboxX = nessieBoundingRectangle.x + (spriteNessie.getWidth()/2 - floatsHitboxSize/2);
+                floatHitboxY = nessieBoundingRectangle.y;
             }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
@@ -87,6 +106,8 @@ public class Nessie
             {
                 spriteNessie.translateX(floatSpeed * Gdx.graphics.getDeltaTime());
                 spriteNessie.setRotation(270f);
+                floatHitboxX = nessieBoundingRectangle.x + spriteNessie.getHeight() - floatsHitboxSize;
+                floatHitboxY = nessieBoundingRectangle.y + (spriteNessie.getWidth()/2 - floatsHitboxSize/2);
             }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
@@ -95,6 +116,8 @@ public class Nessie
             {
                 spriteNessie.translateX(-floatSpeed * Gdx.graphics.getDeltaTime());
                 spriteNessie.setRotation(90f);
+                floatHitboxX = nessieBoundingRectangle.x;
+                floatHitboxY = nessieBoundingRectangle.y + (spriteNessie.getWidth()/2 - floatsHitboxSize/2);
             }
         }
 
@@ -110,7 +133,7 @@ public class Nessie
     }
 
 
-    public static boolean splash()
+    public static void headBut(List<Boat> boats)
     {
         if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT) && !boolIsUnder)
         {
@@ -120,9 +143,11 @@ public class Nessie
         {
             boolIsSplashing = false;
         }
-        spriteSplash.setPosition(spriteNessie.getX(),spriteNessie.getY());
-
-        return boolIsSplashing;
+        for (Boat b:boats) {
+            if(Intersector.overlaps(nessieHitBox,b.hitBoxRectangle)&& Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                b.isHit();
+            }
+        }
     }
 
     private static void keepInBounds()
@@ -142,5 +167,12 @@ public class Nessie
         if(spriteNessie.getY() <= 0f - spriteNessie.getHeight()/2)
             boolIsInboundsY_Down = false;
         else boolIsInboundsY_Down= true;
+    }
+
+    public static void drawShapeRenderer(ShapeRenderer shapeRenderer)
+    {
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(floatHitboxX,floatHitboxY,floatsHitboxSize,floatsHitboxSize);
+
     }
 }
